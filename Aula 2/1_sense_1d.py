@@ -19,7 +19,7 @@ def sense(p, Z):
         hit = (Z == cellColour)
 
         newMeasurements.append( hit * sensor_right[cellColour] * p[cellID] 
-                        + (1 - hit) * (1 - sensor_right[cellColour]) * p[s])
+                        + (1 - hit) * (1 - sensor_right[cellColour]) * p[cellID])
 
 
     #  Normalize

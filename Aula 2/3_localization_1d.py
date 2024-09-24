@@ -14,15 +14,37 @@ p_move = 0.8
 
 def sense(p, Z):
     """Update belief array p according to new measurement Z"""
-    # TODO: insert your code here
+    
+    newMeasurements = []
 
-    return p
+    #  Calculate the percentages
+    for cellID in range(0, len(colors)):       
+        cellColour = colors[cellID]
+        hit = (Z == cellColour)
+
+        newMeasurements.append( hit * sensor_right[cellColour] * p[cellID] 
+                        + (1 - hit) * (1 - sensor_right[cellColour]) * p[cellID])
+
+
+    #  Normalize
+    normalization = 1 / sum(newMeasurements)
+
+    newMeasurements = [round(val * normalization, 4) for val in newMeasurements]
+
+    return newMeasurements
 
 def move(p, U):
     """Update p after movement U"""
-    #TODO: insert your code here
 
-    return p
+    newProbs = []
+
+    for cellID in range(len(p)):
+        calVal = p_move * p[(cellID - U[0]) % len(p)]
+        calVal = calVal + (1 - p_move) * p[cellID]
+
+        newProbs.append(round(calVal, 4))
+
+    return newProbs
 
 #main
 p = []
@@ -35,11 +57,11 @@ for c in range(width):
 
 
 for s in range(len(measurements)):
-    print "sense ",measurements[s]
+    print("sense ",measurements[s])
     p = sense(p,measurements[s])
-    print p
-    print "move ", motions[s]
+    print(p)
+    print("move ", motions[s])
     p = move(p,motions[s])
-    print p
+    print(p)
 
 
