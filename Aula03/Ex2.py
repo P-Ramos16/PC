@@ -27,8 +27,16 @@ def kalmanFilter(measure, oldMeasure, oldVar, oldKalmanGain):
 
 ##  Ex 2.1
 constValue = 5
-noise = np.random.normal(0, 0.25, 1000)
-values = [round(constValue + noiseVal.item(), 3) for noiseVal in noise]
+noise = np.random.normal(0, 5, 1000)
+#values = [round(constValue + noiseVal.item(), 3) for noiseVal in noise]
+
+#  Ex 2.3
+iter = 0
+values = []
+
+for noiseVal in noise:
+    values.append(round(constValue + noiseVal.item(), 3) + iter)
+    iter += 1
 
 estValue = 0
 estCovariance = 5
@@ -43,7 +51,7 @@ for val in values:
 
     filteredValues.append(estValue)
 
-    print(f"Estimate for {val}: {estValue} | gain: {kalmanGain}")
+    print(f"Estimate for {val}: {estValue} | var: {estCovariance} | gain: {kalmanGain}")
 
 
 pp.plot(filteredValues)
