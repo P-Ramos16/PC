@@ -144,11 +144,35 @@ class robot:
 
     def move(self, motion): # Do not change the name of this function
 
-        # ADD CODE HERE
+        stAngle, distance = motion
 
-        
-        return result # make sure your move function returns an instance
-                      # of the robot class with the correct coordinates.
+        new_x = self.x
+        new_y = self.y
+        new_orientation = self.orientation
+
+        if stAngle % 90 == 0:
+            new_x = self.x + distance * cos(self.orientation)
+            new_y = self.y + distance * sin(self.orientation)
+
+        else:
+
+            radius = self.length / tan(stAngle)
+
+            center_x = self.x - radius * sin(self.orientation)
+            center_y = self.y + radius * cos(self.orientation)
+
+            beta = distance / radius
+
+            new_x = center_x + radius * sin(self.orientation + beta)
+            new_y = center_y - radius * cos(self.orientation + beta)
+            new_orientation = self.orientation + beta
+
+
+        newrobot = robot(self.length)
+        newrobot.set(new_x, new_y, new_orientation)
+
+        return newrobot # make sure your move function returns an instance
+                        # of the robot class with the correct coordinates.
 
     # --------
     # sense: 
@@ -158,8 +182,25 @@ class robot:
     def sense(self, addNoise=1): #do not change the name of this function
         Z = []
 
-        # ENTER CODE HERE
-        # HINT: You will probably need to use the function atan2()
+        for landmarkX, landmarkY in landmarks:
+            currAngle = self.orientation
+
+            landmarkToRobotAngle = atan2(landmarkY-self.y, landmarkX-self.x)
+
+
+            alphaLandmark = landmarkToRobotAngle - currAngle
+
+            if alphaLandmark < 0:
+                alphaLandmark += 2 * pi
+
+            elif alphaLandmark > 2 * pi:
+                alphaLandmark -= 2 * pi
+
+            print(degrees(alphaLandmark))
+
+            Z.append(alphaLandmark)
+
+        Z.sort(reverse=True)
 
 
         return Z #Leave this line here. Return vector Z of 4 bearings.
@@ -353,23 +394,23 @@ print(particle_filter(motions, measurements))
 ##       Robot:     [x=39.034 y=7.1270 orient=0.2886]
 ##
 ##
-##length = 20.
-##bearing_noise  = 0.0
-##steering_noise = 0.1
-##distance_noise = 5.0
+length = 20.
+bearing_noise  = 0.0
+steering_noise = 0.1
+distance_noise = 5.0
 ##
-##myrobot = robot(length)
-##myrobot.set(0.0, 0.0, 0.0)
-##myrobot.set_noise(bearing_noise, steering_noise, distance_noise)
+myrobot = robot(length)
+myrobot.set(0.0, 0.0, 0.0)
+myrobot.set_noise(bearing_noise, steering_noise, distance_noise)
 ##
-##motions = [[0.0, 10.0], [pi / 6.0, 10], [0.0, 20.0]]
+motions = [[0.0, 10.0], [pi / 6.0, 10], [0.0, 20.0]]
 ##
-##T = len(motions)
+T = len(motions)
 ##
-##print('Robot:    ', myrobot)
-##for t in range(T):
-##    myrobot = myrobot.move(motions[t])
-##    print('Robot:    ', myrobot)
+print('Robot:    ', myrobot)
+for t in range(T):
+    myrobot = myrobot.move(motions[t])
+    print('Robot:    ', myrobot)
 ##
 ##
 

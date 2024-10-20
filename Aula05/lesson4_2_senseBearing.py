@@ -100,15 +100,10 @@ class robot:
         for landmarkX, landmarkY in landmarks:
             currAngle = self.orientation
 
-            Zline = [abs(landmarkX - self.x), abs(landmarkY - self.y)]
+            landmarkToRobotAngle = atan2(landmarkY-self.y, landmarkX-self.x)
 
-            
-            
-            landmarkWorldAngle = cos(Zline[0]) - sin(Zline[1])
 
-            print(landmarkWorldAngle * pi)
-
-            alphaLandmark = landmarkWorldAngle - currAngle
+            alphaLandmark = landmarkToRobotAngle - currAngle
 
             if alphaLandmark < 0:
                 alphaLandmark += 2 * pi
@@ -116,8 +111,11 @@ class robot:
             elif alphaLandmark > 2 * pi:
                 alphaLandmark -= 2 * pi
 
+            print(degrees(alphaLandmark))
+
             Z.append(alphaLandmark)
 
+        Z.sort(reverse=True)
 
         return Z #Leave this line here. Return vector Z of 4 bearings.
     
